@@ -30,19 +30,13 @@ class StatementProcessor:
         with self.Session() as session:
             try:
                 query = (
-                    select(
-                        Trade.date_time,
-                        Trade.filled_price,
-                        Trade.buy_qty,
-                        Trade.sell_qty,
-                        Trade.code,
-                        Trade.order_id,
-                    )
+                    select(Trade)
                     .order_by(Trade.date_time.desc())
                     .limit(limit)
                     .offset(offset)
                 )
-                res = session.execute(query).all()
+                res = session.execute(query).scalars().all()
+                res = [row.__dict__ for row in res]
                 return res
             except SQLAlchemyError as e:
                 raise
@@ -51,14 +45,7 @@ class StatementProcessor:
         with self.Session() as session:
             try:
                 query = (
-                    select(
-                        Trade.date_time,
-                        Trade.filled_price,
-                        Trade.buy_qty,
-                        Trade.sell_qty,
-                        Trade.code,
-                        Trade.order_id,
-                    )
+                    select(Trade)
                     .where(
                         Trade.date_time >= datetime_start,
                         Trade.date_time <= datetime_end,
@@ -67,7 +54,8 @@ class StatementProcessor:
                     .limit(limit)
                     .offset(offset)
                 )
-                res = session.execute(query).all()
+                res = session.execute(query).scalars().all()
+                res = [row.__dict__ for row in res]
                 return res
             except ValueError:
                 raise
