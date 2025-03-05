@@ -1,0 +1,5 @@
+[database]
+url = sqlite:///trades.db
+
+[statements]
+dir = ../data/statements

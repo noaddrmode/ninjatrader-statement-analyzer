@@ -138,6 +138,7 @@ venv.bak/
 data/
 *.db
 *.pdf
+config.ini
 
 # Spyder project settings
 .spyderproject
