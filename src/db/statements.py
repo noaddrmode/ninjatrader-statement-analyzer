@@ -26,7 +26,7 @@ class StatementProcessor:
             else:
                 session.commit()
 
-    def get_all_trades(self, limit=None, offset=None):
+    def get_all_trades(self, limit=1000, offset=None):
         with self.Session() as session:
             try:
                 query = (
@@ -41,7 +41,7 @@ class StatementProcessor:
             except SQLAlchemyError as e:
                 raise
 
-    def get_trades_between(self, datetime_start, datetime_end, limit=None, offset=None):
+    def get_trades_between(self, datetime_start, datetime_end, limit=1000, offset=None):
         with self.Session() as session:
             try:
                 query = (
