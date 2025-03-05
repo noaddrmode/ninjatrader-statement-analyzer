@@ -2,7 +2,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import select
-from db.db import Trade, engine
+from db.db import Trade, engine as DatabaseEngine
 from datetime import datetime
 
 
@@ -44,7 +44,7 @@ class StatementProcessor:
         with self.Session() as session:
             try:
                 query = (
-                    select(Trade.date_time)
+                    select(Trade)
                     .where(
                         Trade.date_time >= datetime_start,
                         Trade.date_time <= datetime_end,
@@ -53,7 +53,7 @@ class StatementProcessor:
                     .limit(limit)
                     .offset(offset)
                 )
-                res = session.execute(query).scalars.all()
+                res = session.execute(query).scalars().all()
                 return res
             except ValueError:
                 raise
