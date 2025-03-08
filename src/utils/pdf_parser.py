@@ -38,14 +38,14 @@ class PDFParser:
 
     def format_trade(self, symbol, trade):
         formatted = {
-            "symbol": symbol,
+            "symbol": str(symbol).strip(),
             # todo, handle timezone (GMT)
             "date_time": datetime.strptime(trade[0], "%m/%d/%Y %I:%M:%S %p(GMT)"),
-            "code": trade[1],
-            "buy_qty": trade[2] if trade[2] != "-" else 0,
-            "sell_qty": trade[3] if trade[3] != "-" else 0,
-            "filled_price": trade[4],
-            "order_id": trade[5],
+            "code": str(trade[1]).strip(),
+            "buy_qty": int(trade[2]) if trade[2] != "-" else 0,
+            "sell_qty": int(trade[3]) if trade[3] != "-" else 0,
+            "filled_price": float(trade[4]),
+            "order_id": str(trade[5]).strip(),
         }
         return formatted
 
