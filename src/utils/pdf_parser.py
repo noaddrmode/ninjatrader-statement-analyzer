@@ -36,8 +36,9 @@ class PDFParser:
         except Exception:
             raise
 
-    def format_trade(self, trade):
+    def format_trade(self, symbol, trade):
         formatted = {
+            "symbol": symbol,
             # todo, handle timezone (GMT)
             "date_time": datetime.strptime(trade[0], "%m/%d/%Y %I:%M:%S %p(GMT)"),
             "code": trade[1],
@@ -58,7 +59,7 @@ class PDFParser:
     # Date & Time                  Code    Buy Qty Sell Qty  Filled Price       Order_id
     # ...
     def extract_trades_from_pdf(self, pdf):
-        trades_by_ticker = defaultdict(list)
+        trades_by_symbol = defaultdict(list)
         text = self.extract_text_from_pdf(pdf)
 
         regex = {
@@ -72,7 +73,7 @@ class PDFParser:
         title_matches = list(regex["table_title"].finditer(text))
 
         for i, match in enumerate(title_matches):
-            ticker = match.group(1)  # MNQH5
+            symbol = match.group(1)  # MNQH5
             start_index = match.end()
             end_index = (
                 title_matches[i + 1].start()
@@ -80,8 +81,8 @@ class PDFParser:
                 else len(text)
             )
             trades = regex["trade_fills"].findall(text[start_index:end_index])
-            trades_by_ticker[ticker] = [self.format_trade(trade) for trade in trades]
-        return trades_by_ticker
+            trades_by_symbol[symbol] = [self.format_trade(symbol, trade) for trade in trades]
+        return trades_by_symbol
 
     def get_all_trades(self):
         pdf_files = self.get_pdfs()
@@ -89,8 +90,8 @@ class PDFParser:
         for pdf in pdf_files:
             try:
                 trades = self.extract_trades_from_pdf(pdf)
-                for ticker, trades in trades.items():
-                    all_trades[ticker].extend(trades)
+                for symbol, trades in trades.items():
+                    all_trades[symbol].extend(trades)
             except ValueError:
                 continue
         return all_trades

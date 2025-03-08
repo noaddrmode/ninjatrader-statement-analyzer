@@ -21,6 +21,7 @@ class Trade(Base):
     __tablename__ = "trades"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    symbol: Mapped[str] = mapped_column(String, nullable=False)
     date_time: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     code: Mapped[str] = mapped_column(String, nullable=False)
     buy_qty: Mapped[int] = mapped_column(Integer, nullable=False)

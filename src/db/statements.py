@@ -16,7 +16,7 @@ class StatementProcessor:
     def record_trades(self, trades):
         with self.Session() as session:
             try:
-                for _ticker, trades in trades.items():
+                for _symbol, trades in trades.items():
                     stmt = sqlite_insert(Trade).values(trades)
                     stmt = stmt.on_conflict_do_nothing()
                     session.execute(stmt)
